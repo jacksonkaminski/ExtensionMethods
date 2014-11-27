@@ -41,3 +41,16 @@ Icon
 Network Trash Folder
 Temporary Items
 .apdisk
+
+
+# Dev-Related files
+*.dep *.aps *.vbw *.suo *.obj *.ncb *.plg *.bsc *.ilk 
+*.exp *.sbr *.opt *.pdb *.idb *.pch *.res *.user
+
+*\obj
+*\bin
+
+*.exe
+
+# NuGet Packages folder
+*\packages
