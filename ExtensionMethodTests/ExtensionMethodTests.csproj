@@ -42,7 +42,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ExtensionMethod.Tests.cs" />
+    <Compile Include="EnumerableMethod.Tests.cs" />
+    <Compile Include="CollectionMethod.Tests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -1,58 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using NUnit.Framework;
-using CollectionExtensions;
+using EnumerationExtensions;
 
 namespace ExtensionMethodTests
 {
     [TestFixture]
-    public class TestsCollectionPartitionMethods
+    public class TestEnumerableMethods
     {
         int[] _array;
-        int _size = 10;
         List<Person> _persons;
 
         [SetUp]
         public void SetUp()
         {
-            _array = new int[] { 0, 1, 2, 3 ,4 ,5 ,6 ,7 ,8 ,9 };
+            _array = new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
             _persons = GetPersonList();
         }
 
-        #region Tests for Slice()
-
         [Test]
-        public void SliceCanHandleUnderflow()
-        {
-            Assert.AreEqual(new int[0], _array.Slice(-1, 5)); //start underflow
-            Assert.AreEqual(new int[0], _array.Slice(1, -20)); //underflow
-            Assert.AreEqual(new int[0], _array.Slice(0, _size * -1)); //underflow boundry check
-            Assert.AreEqual(new int[0], _array.Slice(1, _size * -1)); //underflow due to position of starting point
-        }
-
-        [Test]
-        public void SliceCanHandleOverflow()
-        {
-            Assert.AreEqual(new int[0], _array.Slice(_size + 1, 5));
-        }
-
-        [Test]
-        public void CanSlice()
-        {
-            Assert.AreEqual(_array.Length, 10);
-            Assert.AreEqual(new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }, _array.Slice(0, _size)); //boundary check
-            Assert.AreEqual(new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8 }, _array.Slice<int>(0, -1)); //boundary and negative end check
-            Assert.AreEqual(new int[] { 2, 3, 4 }, _array.Slice<int>(2, -5)); //negative end check
-            Assert.AreEqual(new int[] { 5, 6, 7, 8 }, _array.Slice<int>(5, 9));
-        }
-
-        #endregion
-
-        #region Tests for Partition
-
-        [Test]
-        public void CanPartitionPrimitive()
+        public void CanPartitionEnumerableOfPrimitiveType()
         {
             IEnumerable<int>[] partitionedResults1 = _array.Partition<int>(x => x > 5);
             Assert.AreEqual(partitionedResults1.Length, 2);
@@ -61,7 +31,7 @@ namespace ExtensionMethodTests
         }
 
         [Test]
-        public void CanPartitionComplexType()
+        public void CanPartitionEnumerableOfComplexType()
         {
             IEnumerable<Person>[] partitionedResults = _persons.Partition<Person>(x => x.Gender == 'M');
             Assert.AreEqual(partitionedResults.Length, 2);
@@ -71,16 +41,15 @@ namespace ExtensionMethodTests
 
         [Test]
         [ExpectedException(typeof(InvalidOperationException))]
-        public void CanThrowExceptionOEmptyCollection()
+        public void CanThrowExceptionOEmptyCollectionEnumerable()
         {
             IEnumerable<Person> noPersons = new List<Person>();
-            IEnumerable<Person>[] partitionedResults = 
+            IEnumerable<Person>[] partitionedResults =
                         noPersons.Partition<Person>(x => x.Gender == 'M', OnEmptyCollection.ThrowException);
-
         }
 
         [Test]
-        public void CanReturnEmptyCollectionIfEmptyCollection()
+        public void CanReturnEmptyCollectionIfEmptyCollectionEnumerable()
         {
             IEnumerable<Person> noPersons = new List<Person>();
             IEnumerable<Person>[] partitionedResults =
@@ -90,7 +59,7 @@ namespace ExtensionMethodTests
             Assert.IsTrue(partitionedResults[1].Count() == 0);
         }
 
-        #endregion
+
 
         #region nested class
 
@@ -109,7 +78,7 @@ namespace ExtensionMethodTests
         private List<Person> GetPersonList()
         {
             List<Person> persons = new List<Person>();
-            persons.Add(new Person() { FirstName = "John", Lastname ="Doe", Age = 24, Gender = 'M' });
+            persons.Add(new Person() { FirstName = "John", Lastname = "Doe", Age = 24, Gender = 'M' });
             persons.Add(new Person() { FirstName = "Jane", Lastname = "Doe", Age = 30, Gender = 'F' });
             persons.Add(new Person() { FirstName = "Sally", Lastname = "Murphy", Age = 27, Gender = 'F' });
             persons.Add(new Person() { FirstName = "Brian", Lastname = "Dorsey", Age = 32, Gender = 'M' });

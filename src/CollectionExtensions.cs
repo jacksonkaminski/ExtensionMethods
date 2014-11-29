@@ -31,15 +31,10 @@ using System.Linq;
 
 namespace CollectionExtensions
 {
-    public enum OnEmptyCollection
+    public static class CollectionExtensions
     {
-        ReturnEmptyCollections = 0,
-        ThrowException
-    }
+        #region Slice
 
-    public static class CollectionPartitionExtension
-    {
-        
         /// <summary>
         /// Get the array slice between the two indexes; If overflow or inderflow occurs, 
         /// will return an empty array of type T. Slice is inclusive for start, exclusive
@@ -87,76 +82,130 @@ namespace CollectionExtensions
             return newArry;
         }
 
-        /// <summary>
-        /// Takes a collection and a predicate function, and returns an array that contains the contents
-        /// of the original collection split into 2 collections. The first collection contains all items
-        /// that returned true from the partition test, the second collection contains all the items that
-        /// returned false from the partition test
-        /// </summary>
-        /// <typeparam name="T">The type for the collection the partition is to be applied to</typeparam>
-        /// <param name="collection">The collection to be partitioned</param>
-        /// <param name="partitionTest">The predicate used to partition the collection's contents</param>
-        public static IEnumerable<T>[] Partition<T>(this IEnumerable<T> collection, Func<T, bool> partitionTest)
+        // @TODO - NEED TO DOCUMENT
+        // @TODO - NEED TO ADD TESTS
+        // @TODO - NEED TO IMPLEMENT!!!!!!1
+        public static IList<T> Slice<T>(this IList<T> arr, int start, int end)
         {
-            return collection.Partition(partitionTest, OnEmptyCollection.ReturnEmptyCollections);
+            throw new NotImplementedException("NOT YET IMPLEMENTED!");
+        }
+
+        #endregion
+
+        #region Partition
+
+        // @TODO - NEED TO ADD TESTS
+        /// <summary>
+        /// Takes a list and splits it into two lists based on a predicate method supplied to Partition
+        /// </summary>
+        /// <param name="list">The list to be partitioned</param>
+        /// <param name="partitionTest">The predicate method used to partition the list's contents</param>
+        /// <returns>An Array containing two strongly-typed lists. The first list contains all elements
+        /// that returned true when the predicate was applied; the second list contains the elements
+        /// that returned false.</returns>
+        public static IList<T>[] Partition<T>(this IList<T> list, Func<T, bool> partitionTest)
+        {
+            return list.Partition<T>(partitionTest, false);
         }
 
         /// <summary>
-        ///  Takes a collection and a predicate function, and returns an array that contains the contents
-        /// of the original collection split into 2 collections. The first collection contains all items
-        /// that returned true from the partition test, the second collection contains all the items that
-        /// returned false from the partition test
+        /// Takes a list and splits it into two lists based on a predicate method supplied to Partition
         /// </summary>
-        /// <typeparam name="T">The type for the collection the partition is to be applied to</typeparam>
-        /// <param name="collection">The collection to be partitioned</param>
-        /// <param name="partitionTest">The predicate used to partition the collection's contents</param>
-        /// <param name="emptyCollectionStrategy">The strategy to apply if the collection being operated
-        /// on is empty; Options are to return an empty collection or throw an Exception</param>
-        /// <exception cref="InvalidOperationException">If Partition is called on an empty collection when
+        /// <param name="list">The list to be partitioned</param>
+        /// <param name="partitionTest">The predicate method used to partition the list's contents</param>
+        /// <param name="throwErrorIfCollectionEmpty">Determines if execution should halt if the list to be partitioned is empty</param>
+        /// <returns>An Array containing two strongly-typed lists. The first list contains all elements
+        /// that returned true when the predicate was applied; the second list contains the elements
+        /// that returned false.</returns>
+        /// <exception cref="InvalidOperationException">If Partition is called on an empty list when
         /// the OnEmptyCollection.ThrowException option is selected, then this exception will be raised</exception>
-        public static IEnumerable<T>[] Partition<T>(this IEnumerable<T> collection, Func<T, bool> partitionTest, OnEmptyCollection emptyCollectionStrategy)
+        public static IList<T>[] Partition<T>(this IList<T> list, Func<T, bool> partitionTest, bool throwErrorIfCollectionEmpty)
         {
-            IEnumerable<T> passTest = Enumerable.Empty<T>();
-            IEnumerable<T> failTest = Enumerable.Empty<T>();
+            IList<T> passTest = new List<T>();
+            IList<T> failTest = new List<T>();
 
-            if (collection.Count() == 0)
+            if (list.Count == 0)
             {
-                if (emptyCollectionStrategy == OnEmptyCollection.ReturnEmptyCollections)
+                if (throwErrorIfCollectionEmpty == false)
                 {
-                    return new IEnumerable<T>[] { passTest, failTest }; 
+                    return new IList<T>[] { passTest, failTest };
                 }
 
                 throw new InvalidOperationException("Partition attempt failed due to empty collection");
             }
 
-            foreach (var item in collection)
+            foreach (var item in list)
             {
                 if (partitionTest(item))
                 {
-                    passTest = passTest.Append<T>(item);
+                    passTest.Add(item);
                 }
                 else
                 {
-                    failTest = failTest.Append<T>(item);
+                    failTest.Add(item);
                 }
             }
 
-            return new IEnumerable<T>[] { passTest, failTest };
+            return new IList<T>[] { passTest, failTest };
         }
 
         /// <summary>
-        /// Appends a value to an IEnumerable type collection
+        /// Takes an array and splits it into two lists based on a predicate method supplied to Partition
         /// </summary>
-        /// <typeparam name="T">The type for the collection</typeparam>
-        /// <param name="enumerable">The collection</param>
-        /// <param name="value">The Value to be appended to the end of the collection</param>
-        public static IEnumerable<T> Append<T>(this IEnumerable<T> enumerable, T value)
+        /// <param name="array">The array to be partitioned</param>
+        /// <param name="partitionTest">The predicate method used to partition the array's contents</param>
+        /// <returns>An Array containing two arrays. The first array contains all elements
+        /// that returned true when the predicate was applied; the second array contains the elements
+        /// that returned false.</returns>
+        public static T[][] Partition<T>(this T[] array, Func<T, bool> partitionTest)
         {
-            foreach (var cur in enumerable)
-            {
-                yield return cur;
-            }
-            yield return value;
+            return array.Partition<T>(partitionTest, false);
         }
+
+        /// <summary>
+        /// Takes an array and splits it into two lists based on a predicate method supplied to Partition
+        /// </summary>
+        /// <param name="array">The array to be partitioned</param>
+        /// <param name="partitionTest">The predicate method used to partition the array's contents</param>
+        /// <param name="throwErrorIfCollectionEmpty">Determines if execution should halt if the array to be partitioned is empty</param>
+        /// <returns>An Array containing two arrays. The first array contains all elements
+        /// that returned true when the predicate was applied; the second array contains the elements
+        /// that returned false.</returns>
+        /// <exception cref="InvalidOperationException">If Partition is called on an empty array when
+        /// the OnEmptyCollection.ThrowException option is selected, then this exception will be raised</exception>
+        public static T[][] Partition<T>(this T[] array, Func<T, bool> partitionTest, bool throwErrorIfCollectionEmpty)
+        {
+            IList<T> passTest = new List<T>();
+            IList<T> failTest = new List<T>();
+
+            if (array.Length == 0)
+            {
+                if (throwErrorIfCollectionEmpty == false)
+                {
+                    return new T[2][] { new T[0], new T[0] };
+                }
+
+                throw new InvalidOperationException("Partition attempt failed due to empty collection");
+            }
+
+            foreach (var item in array)
+            {
+                if (partitionTest(item))
+                {
+                    passTest.Add(item);
+                }
+                else
+                {
+                    failTest.Add(item);
+                }
+            }
+
+            T[][] results = new T[2][] { passTest.ToArray(), failTest.ToArray() }; 
+
+            return results;
+        }
+
+        #endregion
+
     }
 }
