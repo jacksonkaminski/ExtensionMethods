@@ -26,8 +26,9 @@ namespace ExtensionMethodTests
 
         #region Tests for Slice()
 
+        //-- Tests for IList
         [Test]
-        public void SliceCanHandleUnderflow()
+        public void SliceListCanHandleUnderflow()
         {
             Assert.AreEqual(new int[0], _array.Slice(-1, 5)); //start underflow
             Assert.AreEqual(new int[0], _array.Slice(1, -20)); //underflow
@@ -36,19 +37,43 @@ namespace ExtensionMethodTests
         }
 
         [Test]
-        public void SliceCanHandleOverflow()
+        public void SliceListCanHandleOverflow()
         {
             Assert.AreEqual(new int[0], _array.Slice(_size + 1, 5));
         }
 
         [Test]
-        public void CanSlice()
+        public void CanSliceList()
         {
-            Assert.AreEqual(_array.Length, 10);
             Assert.AreEqual(new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }, _array.Slice(0, _size)); //boundary check
             Assert.AreEqual(new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8 }, _array.Slice<int>(0, -1)); //boundary and negative end check
             Assert.AreEqual(new int[] { 2, 3, 4 }, _array.Slice<int>(2, -5)); //negative end check
             Assert.AreEqual(new int[] { 5, 6, 7, 8 }, _array.Slice<int>(5, 9));
+        }
+
+        //-- Tests for Array
+        [Test]
+        public void SliceArrayCanHandleUnderflow()
+        {
+            Assert.AreEqual(new List<int>(), _list.Slice(-1, 5)); //start underflow
+            Assert.AreEqual(new List<int>(), _list.Slice(1, -20)); //underflow
+            Assert.AreEqual(new List<int>(), _list.Slice(0, _size * -1)); //underflow boundry check
+            Assert.AreEqual(new List<int>(), _list.Slice(1, _size * -1)); //underflow due to position of starting point
+        }
+
+        [Test]
+        public void SliceArrayCanHandleOverflow()
+        {
+            Assert.AreEqual(new List<int>(), _list.Slice(_size + 1, 5));
+        }
+
+        [Test]
+        public void CanSliceArray()
+        {
+            Assert.AreEqual(new List<int>() { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }, _list.Slice(0, _size)); //boundary check
+            Assert.AreEqual(new List<int>() { 0, 1, 2, 3, 4, 5, 6, 7, 8 }, _list.Slice<int>(0, -1)); //boundary and negative end check
+            Assert.AreEqual(new List<int>() { 2, 3, 4 }, _list.Slice<int>(2, -5)); //negative end check
+            Assert.AreEqual(new List<int>() { 5, 6, 7, 8 }, _list.Slice<int>(5, 9));
         }
 
         #endregion

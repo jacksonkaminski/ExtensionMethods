@@ -40,7 +40,6 @@ namespace CollectionExtensions
         /// will return an empty array of type T. Slice is inclusive for start, exclusive
         /// for end
         /// </summary>
-        /// <typeparam name="T">The array type</typeparam>
         /// <param name="arr">Array to be sliced</param>
         /// <param name="start">Index at which the slice starts; cannot be negative.</param>
         /// <param name="end">Endpoint for the slice of the array. Supports negative values</param>
@@ -82,19 +81,56 @@ namespace CollectionExtensions
             return newArry;
         }
 
-        // @TODO - NEED TO DOCUMENT
-        // @TODO - NEED TO ADD TESTS
-        // @TODO - NEED TO IMPLEMENT!!!!!!1
-        public static IList<T> Slice<T>(this IList<T> arr, int start, int end)
+        /// <summary>
+        /// Get the list slice between the two indexes; If overflow or inderflow occurs, 
+        /// will return an empty list of type T. Slice is inclusive for start, exclusive
+        /// for end
+        /// </summary>
+        /// <param name="list">The list to be sliced</param>
+        /// <param name="start">Index at which the slice starts; cannot be negative.</param>
+        /// <param name="end">Endpoint for the slice of the list. Supports negative values</param>
+        /// <returns>List slice adhereing to the start and ending points, or a strongly
+        /// typed emtpy array if an underflow or overflow situation is encountered</returns>
+        public static IList<T> Slice<T>(this IList<T> list, int start, int end)
         {
-            throw new NotImplementedException("NOT YET IMPLEMENTED!");
+            int segmentEnd = end;
+            //check for and handle underflow/overflow scenarios
+            if (start < 0 || start > list.Count())
+            {
+                return new List<T>();
+            }
+            if (end > 0 && start > end || end == 0)
+            {
+                return new List<T>();
+            }
+
+            if (end < 0)
+            {
+                //end is negative value, so adding will result in subtraction
+                segmentEnd = list.Count() + end;
+
+                //handle scenario where negative end index causes underflow
+                if (segmentEnd < start)
+                {
+                    return new List<T>();
+                }
+            }
+
+            int len = segmentEnd - start;
+
+            IList<T> newList = new List<T>();
+            for (int i = start; i < start + len; i++)
+            {
+                newList.Add(list[i]);
+            }
+
+            return newList;
         }
 
         #endregion
 
         #region Partition
 
-        // @TODO - NEED TO ADD TESTS
         /// <summary>
         /// Takes a list and splits it into two lists based on a predicate method supplied to Partition
         /// </summary>
