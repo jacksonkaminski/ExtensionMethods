@@ -59,7 +59,23 @@ namespace ExtensionMethodTests
             Assert.IsTrue(partitionedResults[1].Count() == 0);
         }
 
+        [Test]
+        public void CanChunk()
+        {
+            int chunkSize = 2;
+            IList<Person> persons = GetPersonList();
+            IEnumerable<IList<Person>> chunkedData = persons.Chunk<Person>(chunkSize);
+            Assert.AreEqual(4, chunkedData.Count());
+            Assert.AreEqual(chunkSize, chunkedData.ElementAt(0).Count());
+        }
 
+        [Test]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void CanThrowExceptionOnInvalidChunkSize()
+        {
+            IEnumerable<IList<Person>> chunked = _persons.Chunk(0);
+            var test = chunked.Count(); //deferred execution means requires action to raise exception 
+        }
 
         #region nested class
 

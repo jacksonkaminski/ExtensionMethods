@@ -121,7 +121,6 @@ namespace EnumerationExtensions
 
         #region Chunk
 
-        // @TODO - NEED TO ADD TESTS
         /// <summary>
         /// Takes an enumberable collection and splits it into a set of lists of a specific size
         /// </summary>
