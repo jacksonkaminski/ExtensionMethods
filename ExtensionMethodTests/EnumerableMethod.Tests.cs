@@ -21,6 +21,8 @@ namespace ExtensionMethodTests
             _persons = GetPersonList();
         }
 
+        #region Tests for Partition
+
         [Test]
         public void CanPartitionEnumerableOfPrimitiveType()
         {
@@ -45,7 +47,7 @@ namespace ExtensionMethodTests
         {
             IEnumerable<Person> noPersons = new List<Person>();
             IEnumerable<Person>[] partitionedResults =
-                        noPersons.Partition<Person>(x => x.Gender == 'M', OnEmptyCollection.ThrowException);
+                        noPersons.Partition<Person>(x => x.Gender == 'M', true);
         }
 
         [Test]
@@ -53,11 +55,15 @@ namespace ExtensionMethodTests
         {
             IEnumerable<Person> noPersons = new List<Person>();
             IEnumerable<Person>[] partitionedResults =
-                        noPersons.Partition<Person>(x => x.Gender == 'M', OnEmptyCollection.ReturnEmptyCollections);
+                        noPersons.Partition<Person>(x => x.Gender == 'M', false);
 
             Assert.IsTrue(partitionedResults[0].Count() == 0);
             Assert.IsTrue(partitionedResults[1].Count() == 0);
         }
+
+        #endregion
+
+        #region Tests for Chunk
 
         [Test]
         public void CanChunk()
@@ -76,6 +82,25 @@ namespace ExtensionMethodTests
             IEnumerable<IList<Person>> chunked = _persons.Chunk(0);
             var test = chunked.Count(); //deferred execution means requires action to raise exception 
         }
+
+        [Test]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void CanThrowExceptionIfCollectionIsEmpty()
+        {
+            IList<Person> emptyList = new List<Person>();
+            IEnumerable<IList<Person>> chunked = emptyList.Chunk(1, true);
+            var test = chunked.Count(); //deferred execution means requires action to raise exception 
+        }
+
+        [Test]
+        public void CanReturnEmptyCollectionIfCalledOnEmptyCollection()
+        {
+            IList<Person> emptyList = new List<Person>();
+            IEnumerable<IList<Person>> chunked = emptyList.Chunk(1, false);
+            Assert.IsEmpty(chunked);
+        }
+
+        #endregion
 
         #region nested class
 

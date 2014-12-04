@@ -31,12 +31,6 @@ using System.Linq;
 
 namespace EnumerationExtensions
 {
-    public enum OnEmptyCollection
-    {
-        ReturnEmptyCollections = 0,
-        ThrowException
-    }
-
     public static class EnumerableCollectionExtensions
     {
 
@@ -53,9 +47,9 @@ namespace EnumerationExtensions
         /// <param name="partitionTest">The predicate used to partition the collection's contents</param>
         public static IEnumerable<T>[] Partition<T>(this IEnumerable<T> source, Func<T, bool> partitionTest)
         {
-            return source.Partition(partitionTest, OnEmptyCollection.ReturnEmptyCollections);
+            return source.Partition<T>(partitionTest, false);
         }
-
+        
         /// <summary>
         ///  Takes a collection and a predicate function, and returns an array that contains the contents
         /// of the original collection split into 2 collections. The first collection contains all items
@@ -65,21 +59,21 @@ namespace EnumerationExtensions
         /// <typeparam name="T">The type for the collection the partition is to be applied to</typeparam>
         /// <param name="source">The collection to be partitioned</param>
         /// <param name="partitionTest">The predicate method used to partition the collection's contents</param>
-        /// <param name="emptyCollectionStrategy">The strategy to apply if the collection being operated
+        /// <param name="throwErrorIfCollectionEmpty">The strategy to apply if the collection being operated
         /// on is empty; Options are to return an empty collection or throw an Exception</param>
         /// /// <returns>An Array containing two enumerable collections. The first list contains all elements
         /// that returned true when the predicate was applied; the second list contains the elements
         /// that returned false.</returns>
         /// <exception cref="InvalidOperationException">If Partition is called on an empty collection when
         /// the OnEmptyCollection.ThrowException option is selected, then this exception will be raised</exception>
-        public static IEnumerable<T>[] Partition<T>(this IEnumerable<T> source, Func<T, bool> partitionTest, OnEmptyCollection emptyCollectionStrategy)
+        public static IEnumerable<T>[] Partition<T>(this IEnumerable<T> source, Func<T, bool> partitionTest, bool throwErrorIfCollectionEmpty)
         {
             IEnumerable<T> passTest = Enumerable.Empty<T>();
             IEnumerable<T> failTest = Enumerable.Empty<T>();
 
             if (source.Count() == 0)
             {
-                if (emptyCollectionStrategy == OnEmptyCollection.ReturnEmptyCollections)
+                if (throwErrorIfCollectionEmpty == false)
                 {
                     return new IEnumerable<T>[] { passTest, failTest }; 
                 }
@@ -122,7 +116,7 @@ namespace EnumerationExtensions
         #region Chunk
 
         /// <summary>
-        /// Takes an enumberable collection and splits it into a set of lists of a specific size
+        /// Takes an enumberable collection and splits it into a series of lists of a specified size
         /// </summary>
         /// <typeparam name="T">The enumerable's type</typeparam>
         /// <param name="source">The enumerable to be chunked</param>
@@ -130,9 +124,33 @@ namespace EnumerationExtensions
         /// <returns>An Enumerable containing the contents of the original collection,
         /// split into a series of lists of size 'numOfElements'</returns>
         /// <exception cref="InvalidOperationException">Thrown if the numOfElements value 
-        /// is less than 1</exception>
+        /// is less than 1; Also thrown if throwErrorIfCollectionEmpty is set to true and
+        /// the collection Chunk is called on is empty</exception>
         public static IEnumerable<IList<T>> Chunk<T>(this IEnumerable<T> source, int numOfElements)
         {
+            return source.Chunk<T>(numOfElements, false);
+        }
+
+        /// <summary>
+        /// Takes an enumberable collection and splits it into a series of lists of a specified size
+        /// </summary>
+        /// <typeparam name="T">The enumerable's type</typeparam>
+        /// <param name="source">The enumerable to be chunked</param>
+        /// <param name="numOfElements">The size of each chunk (Must be 1 or greater)</param>
+        /// <param name="throwErrorIfCollectionEmpty">The strategy to apply if the collection being operated
+        /// on is empty; Options are to return an empty collection or throw an Exception</param>
+        /// <returns>An Enumerable containing the contents of the original collection,
+        /// split into a series of lists of size 'numOfElements'</returns>
+        /// <exception cref="InvalidOperationException">Thrown if the numOfElements value 
+        /// is less than 1; Also thrown if throwErrorIfCollectionEmpty is set to true and
+        /// the collection Chunk is called on is empty</exception>
+        public static IEnumerable<IList<T>> Chunk<T>(this IEnumerable<T> source, int numOfElements, bool throwErrorIfCollectionEmpty)
+        {
+            if (source.Count() == 0 && throwErrorIfCollectionEmpty)
+            {
+                throw new InvalidOperationException("Chunk attempt failed due to empty collection");
+            }
+
             if (numOfElements <= 0)
             {
                 throw new InvalidOperationException("The Chunk size must be 1 or greater");
