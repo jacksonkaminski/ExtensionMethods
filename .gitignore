@@ -54,3 +54,4 @@ Temporary Items
 
 # NuGet Packages folder
 *\packages
+*.suo
