@@ -175,5 +175,58 @@ namespace EnumerationExtensions
         }
 
         #endregion
+
+        #region JaccardIndexSort
+
+        /// <summary>
+        /// Takes a primary collection and a set of other collections of the same type, and 
+        /// sorts them in order of their similarity to the primary collection by calculating
+        /// the set of collections' Jaccard similarity coefficient
+        /// </summary>
+        /// <param name="source">The enumerable collection being evaluated</param>
+        /// <param name="compareTo">The set of enumerable collections to sort based on their similarity to the source collection</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="InvalidOperationException"></exception>
+        /// <remarks>
+        /// This method is meant to be used to calculate Jaccard coefficients against non-binary datasets
+        /// For more information about the Jaccard Index (Jaccard similarity coefficient) see the 
+        /// following pages:
+        /// http://people.revoledu.com/kardi/tutorial/Similarity/Jaccard.html
+        /// http://en.wikipedia.org/wiki/Jaccard_index
+        /// </remarks>
+        public static IEnumerable<IEnumerable<T>> JaccardIndexSort<T>(this IEnumerable<T> source, IEnumerable<IEnumerable<T>> compareTo)
+        {
+            if (source == null) throw new ArgumentNullException("source");
+            if (compareTo == null) throw new ArgumentNullException("compareTo");
+
+            if (source.Count() == 0) throw new InvalidOperationException("JaccardSort cannot operate on empty source");
+            if (compareTo.Count() == 0) throw new InvalidOperationException("JaccardSort cannot operate against empty compare collection");
+
+            IList<Tuple<double, int>> jaccardValues = new List<Tuple<double, int>>();
+
+            for (int i = 0; i < compareTo.Count(); i++)
+            {
+                double calcJaccardIndex = CalculateJaccardIndex<T>(source, compareTo.ElementAt(i));
+                jaccardValues.Add(new Tuple<double, int>(calcJaccardIndex, i));
+            }
+
+            foreach (var item in jaccardValues.OrderByDescending(x => x.Item1))
+            {
+                yield return compareTo.ElementAt(item.Item2);
+            }
+        }
+
+        //@TODO - IF YOU MAKE THIS PUBLIC, YOU NEED TO DROP THE VALIDATION CHECKS IN HERE AS WELL!!!!!!
+        private static double CalculateJaccardIndex<T>(IEnumerable<T> source, IEnumerable<T> compareTo)
+        {
+            if (source.Count() == 0 && compareTo.Count() == 0) return 1.0;
+
+            IEnumerable<T> intersection = source.Intersect<T>(compareTo);
+            IEnumerable<T> union = source.Union<T>(compareTo);
+
+            return intersection.Count() / (double)union.Count();
+        }
+
+        #endregion
     }
 }

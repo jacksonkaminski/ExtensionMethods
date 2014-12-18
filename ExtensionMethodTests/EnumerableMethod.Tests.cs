@@ -13,12 +13,18 @@ namespace ExtensionMethodTests
     {
         int[] _array;
         List<Person> _persons;
+        IList<int> _jaccard1;
+        IList<int> _jaccard2;
+        IList<int> _jaccard3;
 
         [SetUp]
         public void SetUp()
         {
             _array = new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
             _persons = GetPersonList();
+            _jaccard3 = new List<int> { 1,2,3,4,5 };
+            _jaccard1 = new List<int> { 4,5,6,7,8 };
+            _jaccard2 = new List<int> { 8,9,10,11,12 };
         }
 
         #region Tests for Partition
@@ -101,6 +107,78 @@ namespace ExtensionMethodTests
         }
 
         #endregion
+
+        #region tests for JaccardIndexSort
+
+        [Test]
+        public void CanJaccardIndexSort()
+        {
+            IList<int> list = new List<int>() { 1, 2, 3, 4, 20 };
+
+            IList<IList<int>> lists = new List<IList<int>>();
+            lists.Add(_jaccard1);
+            lists.Add(_jaccard2);
+            lists.Add(_jaccard3);
+
+            var sortedLists = list.JaccardIndexSort<int>(lists);
+            Assert.AreEqual(_jaccard3, sortedLists.ElementAt(0));
+            Assert.AreEqual(_jaccard1, sortedLists.ElementAt(1));
+            Assert.AreEqual(_jaccard2, sortedLists.ElementAt(2));
+        }
+
+        [Test]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void WillThrowArgumentNullExceptionIfSourceIsNull()
+        {
+            IList<int> nullList = null;
+
+            IList<IList<int>> lists = new List<IList<int>>();
+            lists.Add(_jaccard1);
+            lists.Add(_jaccard2);
+            lists.Add(_jaccard3);
+
+            var sortedLists = nullList.JaccardIndexSort<int>(lists);
+            var forceError = sortedLists.Count();
+        }
+
+        [Test]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void WillThrowArgumentNullExceptionIfCompareToIsNull()
+        {
+            IList<IList<int>> nullLists = null;
+
+            var sortedLists = _jaccard1.JaccardIndexSort<int>(nullLists);
+            var forceError = sortedLists.Count();
+        }
+
+        [Test]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void WillThrowInvalidOperationExceptionIfListIsEmpty()
+        {
+            IList<int> emptyList = new List<int>();
+
+            IList<IList<int>> lists = new List<IList<int>>();
+            lists.Add(_jaccard1);
+            lists.Add(_jaccard2);
+            lists.Add(_jaccard3);
+
+            var sortedLists = emptyList.JaccardIndexSort<int>(lists);
+            var forceError = sortedLists.Count();
+
+        }
+
+        [Test]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void WillThrowInvalidOperationExceptionIfCompareToIsEmpty()
+        {
+            IList<IList<int>> emptyCompareTo = new List<IList<int>>();
+
+            var sortedLists = _jaccard1.JaccardIndexSort<int>(emptyCompareTo);
+            var forceError = sortedLists.Count();
+        }
+
+        #endregion
+
 
         #region nested class
 
