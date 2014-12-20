@@ -13,18 +13,12 @@ namespace ExtensionMethodTests
     {
         int[] _array;
         List<Person> _persons;
-        IList<int> _jaccard1;
-        IList<int> _jaccard2;
-        IList<int> _jaccard3;
 
         [SetUp]
         public void SetUp()
         {
             _array = new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
             _persons = GetPersonList();
-            _jaccard3 = new List<int> { 1,2,3,4,5 };
-            _jaccard1 = new List<int> { 4,5,6,7,8 };
-            _jaccard2 = new List<int> { 8,9,10,11,12 };
         }
 
         #region Tests for Partition
@@ -108,7 +102,102 @@ namespace ExtensionMethodTests
 
         #endregion
 
+        #region nested class
+
+        class Person
+        {
+            internal string FirstName { get; set; }
+            internal string Lastname { get; set; }
+            internal char Gender { get; set; }
+            internal int Age { get; set; }
+        }
+
+        #endregion
+
+        #region private methods
+
+        private List<Person> GetPersonList()
+        {
+            List<Person> persons = new List<Person>();
+            persons.Add(new Person() { FirstName = "John", Lastname = "Doe", Age = 24, Gender = 'M' });
+            persons.Add(new Person() { FirstName = "Jane", Lastname = "Doe", Age = 30, Gender = 'F' });
+            persons.Add(new Person() { FirstName = "Sally", Lastname = "Murphy", Age = 27, Gender = 'F' });
+            persons.Add(new Person() { FirstName = "Brian", Lastname = "Dorsey", Age = 32, Gender = 'M' });
+            persons.Add(new Person() { FirstName = "William", Lastname = "Fredericks", Age = 50, Gender = 'M' });
+            persons.Add(new Person() { FirstName = "Laura", Lastname = "Appletree", Age = 43, Gender = 'F' });
+            persons.Add(new Person() { FirstName = "Bob", Lastname = "Stevens", Age = 40, Gender = 'M' });
+
+            return persons;
+        }
+
+        #endregion
+    }
+
+    [TestFixture]
+    public class TestJaccardIndexMethods
+    {
+        IList<int> _jaccard1;
+        IList<int> _jaccard2;
+        IList<int> _jaccard3;
+
+        [SetUp]
+        public void SetUp()
+        {
+            _jaccard1 = new List<int> { 4, 5, 6, 7, 8 };
+            _jaccard2 = new List<int> { 8, 9, 10, 11, 12 };
+            _jaccard3 = new List<int> { 1, 2, 3, 4, 5 };
+        }
+
         #region tests for JaccardIndexSort
+        [Test]
+        public void CanGetJaccardIndex()
+        {
+            double jaccardIndex1 = _jaccard1.GetJaccardIndex<int>(_jaccard3);
+            Assert.AreEqual((double)2 / 8, jaccardIndex1);
+
+            double jaccardIndex2 = _jaccard1.GetJaccardIndex<int>(_jaccard2);
+            Assert.AreEqual((double)1 / 9, jaccardIndex2);
+        }
+
+        [Test]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void WillThrowArgumentNullExceptionIfSourceIsNullOnGetIndex()
+        {
+            IList<int> emptyList = null;
+
+            double jaccardIndex = emptyList.GetJaccardIndex<int>(_jaccard1);
+            var forceError = jaccardIndex;
+        }
+
+        [Test]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void WillThrowArgumentNullExceptionIfCompareToIsNullOnGetIndex()
+        {
+            IList<int> emptyList = null;
+
+            double jaccardIndex = _jaccard1.GetJaccardIndex<int>(emptyList);
+            var forceError = jaccardIndex;
+        }
+
+        [Test]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void WillThrowInvalidOperationExceptionIfSourceIsEmptyOnGetIndex()
+        {
+            IList<int> emptyList = new List<int>();
+
+            double jaccardIndex = emptyList.GetJaccardIndex<int>(_jaccard1);
+            var forceError = jaccardIndex;
+        }
+
+        [Test]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void WillThrowInvalidOperationExceptionIfCompareToIsEmptyOnGetIndex()
+        {
+            IList<int> emptyList = new List<int>();
+
+            double jaccardIndex = _jaccard1.GetJaccardIndex<int>(emptyList);
+            var forceError = jaccardIndex;
+        }
 
         [Test]
         public void CanJaccardIndexSort()
@@ -175,37 +264,6 @@ namespace ExtensionMethodTests
 
             var sortedLists = _jaccard1.JaccardIndexSort<int>(emptyCompareTo);
             var forceError = sortedLists.Count();
-        }
-
-        #endregion
-
-
-        #region nested class
-
-        class Person
-        {
-            internal string FirstName { get; set; }
-            internal string Lastname { get; set; }
-            internal char Gender { get; set; }
-            internal int Age { get; set; }
-        }
-
-        #endregion
-
-        #region private methods
-
-        private List<Person> GetPersonList()
-        {
-            List<Person> persons = new List<Person>();
-            persons.Add(new Person() { FirstName = "John", Lastname = "Doe", Age = 24, Gender = 'M' });
-            persons.Add(new Person() { FirstName = "Jane", Lastname = "Doe", Age = 30, Gender = 'F' });
-            persons.Add(new Person() { FirstName = "Sally", Lastname = "Murphy", Age = 27, Gender = 'F' });
-            persons.Add(new Person() { FirstName = "Brian", Lastname = "Dorsey", Age = 32, Gender = 'M' });
-            persons.Add(new Person() { FirstName = "William", Lastname = "Fredericks", Age = 50, Gender = 'M' });
-            persons.Add(new Person() { FirstName = "Laura", Lastname = "Appletree", Age = 43, Gender = 'F' });
-            persons.Add(new Person() { FirstName = "Bob", Lastname = "Stevens", Age = 40, Gender = 'M' });
-
-            return persons;
         }
 
         #endregion

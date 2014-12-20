@@ -181,12 +181,12 @@ namespace EnumerationExtensions
         /// <summary>
         /// Takes a primary collection and a set of other collections of the same type, and 
         /// sorts them in order of their similarity to the primary collection by calculating
-        /// the set of collections' Jaccard similarity coefficient
+        /// the set of collections' Jaccard similarity coefficients
         /// </summary>
         /// <param name="source">The enumerable collection being evaluated</param>
         /// <param name="compareTo">The set of enumerable collections to sort based on their similarity to the source collection</param>
-        /// <exception cref="ArgumentNullException"></exception>
-        /// <exception cref="InvalidOperationException"></exception>
+        /// <exception cref="ArgumentNullException">Thrown if either source and compareTo are null</exception>
+        /// <exception cref="InvalidOperationException">Thrown if either source or compareTo are empty collections</exception>
         /// <remarks>
         /// This method is meant to be used to calculate Jaccard coefficients against non-binary datasets
         /// For more information about the Jaccard Index (Jaccard similarity coefficient) see the 
@@ -216,7 +216,34 @@ namespace EnumerationExtensions
             }
         }
 
-        //@TODO - IF YOU MAKE THIS PUBLIC, YOU NEED TO DROP THE VALIDATION CHECKS IN HERE AS WELL!!!!!!
+        /// <summary>
+        /// Compares to Enumerable collections determining the Jaccard similarity coefficient 
+        /// of the compareTo collection as it relates to the source collection
+        /// </summary>
+        /// <param name="source">The primary collection</param>
+        /// <param name="compareTo">The collection to compare to source</param>
+        /// <returns>A value between 1.0 and 0.0 denoting the similarity coefficient</returns>
+        /// <exception cref="ArgumentNullException">Thrown if either source and compareTo are null</exception>
+        /// <exception cref="InvalidOperationException">Thrown if either source or compareTo are empty collections</exception>
+        /// <remarks>
+        /// This method is meant to be used to calculate Jaccard coefficients against non-binary datasets
+        /// For more information about the Jaccard Index (Jaccard similarity coefficient) see the 
+        /// following pages:
+        /// http://people.revoledu.com/kardi/tutorial/Similarity/Jaccard.html
+        /// http://en.wikipedia.org/wiki/Jaccard_index
+        /// </remarks>
+        public static double GetJaccardIndex<T>(this IEnumerable<T> source, IEnumerable<T> compareTo)
+        {
+            if (source == null) throw new ArgumentNullException("source");
+            if (compareTo == null) throw new ArgumentNullException("compareTo");
+
+            if (source.Count() == 0) throw new InvalidOperationException("JaccardSort cannot operate on empty source");
+            if (compareTo.Count() == 0) throw new InvalidOperationException("JaccardSort cannot operate against empty compare collection");
+
+            return CalculateJaccardIndex<T>(source, compareTo);
+        }
+
+        //Performs the actual calculation to derive the Jaccard Index
         private static double CalculateJaccardIndex<T>(IEnumerable<T> source, IEnumerable<T> compareTo)
         {
             if (source.Count() == 0 && compareTo.Count() == 0) return 1.0;
