@@ -25,3 +25,14 @@ Applied to an an enumerable collection, this method splits it into a series of l
 Implementations included targeting:
 * IEnumerable
 
+###GetJaccardIndex###
+Get the Jaccard Similarity Coefficient (Jaccard Index) of an enumeration as it relates to another enumeration
+
+Implementations included targeting:
+* IEnumerable
+
+###JaccardIndexSort###
+Applied to a collection of  enumerable collections, this method returns the contents of the collection sorted by their Jaccard Similarity Coefficient in the order of 1.0 down to 0.0 (i.e., more similarity to less similarity) as it relates to another single collection.
+
+Implementations included targeting:
+* IEnumerable

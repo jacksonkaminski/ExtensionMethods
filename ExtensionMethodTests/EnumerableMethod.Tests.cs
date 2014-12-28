@@ -102,18 +102,6 @@ namespace ExtensionMethodTests
 
         #endregion
 
-        #region nested class
-
-        class Person
-        {
-            internal string FirstName { get; set; }
-            internal string Lastname { get; set; }
-            internal char Gender { get; set; }
-            internal int Age { get; set; }
-        }
-
-        #endregion
-
         #region private methods
 
         private List<Person> GetPersonList()
@@ -149,54 +137,85 @@ namespace ExtensionMethodTests
         }
 
         #region tests for JaccardIndexSort
+
         [Test]
         public void CanGetJaccardIndex()
         {
+            //non-binary variant implementation
             double jaccardIndex1 = _jaccard1.GetJaccardIndex<int>(_jaccard3);
             Assert.AreEqual((double)2 / 8, jaccardIndex1);
 
             double jaccardIndex2 = _jaccard1.GetJaccardIndex<int>(_jaccard2);
             Assert.AreEqual((double)1 / 9, jaccardIndex2);
+
+            Person person1 = new Person() { FirstName = "John", Lastname = "Doe", Age = 24, Gender = 'M' };
+            Person person2 = new Person() { FirstName = "Val", Lastname = "Murphy", Age = 30, Gender = 'F' };
+
+            //binary variant implementation
+            double jaccardIndex3 = person1.GetJaccardIndex<Person>(new List<Func<Person, bool>>() {
+                                                            (x) => x.FirstName == "John", 
+                                                            (x) => x.Lastname == "Murphy",
+                                                            (x) => x.Age < 30,
+                                                            (x) => x.Gender == 'M' });
+
+            Assert.AreEqual((double)3 / 4, jaccardIndex3);
+
+            double jaccardIndex4 = person2.GetJaccardIndex<Person>(new List<Func<Person, bool>>() {
+                                                            (x) => x.FirstName == "John", 
+                                                            (x) => x.Lastname == "Murphy",
+                                                            (x) => x.Age < 30,
+                                                            (x) => x.Gender == 'M' });
+            Assert.AreEqual((double)1 / 4, jaccardIndex4);
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
-        public void WillThrowArgumentNullExceptionIfSourceIsNullOnGetIndex()
+        public void WillThrowArgumentNullExceptionIfParamsNullBinaryDataVersion()
         {
-            IList<int> emptyList = null;
+            Person nullPerson = null;
+            Person person1 = new Person() { FirstName = "John", Lastname = "Doe", Age = 24, Gender = 'M' };
 
-            double jaccardIndex = emptyList.GetJaccardIndex<int>(_jaccard1);
-            var forceError = jaccardIndex;
+            Assert.Throws<ArgumentNullException>(
+                    () => nullPerson.GetJaccardIndex<Person>(new List<Func<Person, bool>>() {
+                                                            (x) => x.FirstName == "John", 
+                                                            (x) => x.Lastname == "Murphy",
+                                                            (x) => x.Age < 30,
+                                                            (x) => x.Gender == 'M' }));
+
+            Assert.Throws<ArgumentNullException>(
+                    () => nullPerson.GetJaccardIndex<Person>(null));
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
-        public void WillThrowArgumentNullExceptionIfCompareToIsNullOnGetIndex()
+        public void WillThrowInvalidOperationExceptionIfComparatorsEmpty()
         {
-            IList<int> emptyList = null;
+            Person person1 = new Person() { FirstName = "John", Lastname = "Doe", Age = 24, Gender = 'M' };
 
-            double jaccardIndex = _jaccard1.GetJaccardIndex<int>(emptyList);
-            var forceError = jaccardIndex;
+            Assert.Throws<InvalidOperationException>(
+                    () => person1.GetJaccardIndex(new List<Func<Person, bool>>()));
         }
 
         [Test]
-        [ExpectedException(typeof(InvalidOperationException))]
-        public void WillThrowInvalidOperationExceptionIfSourceIsEmptyOnGetIndex()
+        public void WillThrowArgumentNullExceptionIfParamsNullEnumerableDataVersion()
+        {
+            IList<int> listIsNull = null;
+
+            Assert.Throws<ArgumentNullException>(
+                    () => listIsNull.GetJaccardIndex<int>(_jaccard1).ToString());
+
+            Assert.Throws<ArgumentNullException>(
+                    () => _jaccard1.GetJaccardIndex<int>(listIsNull).ToString());
+        }
+
+        [Test]
+        public void WillThrowInvalidOperationExceptionIfParamsEmptyOnGetIndex()
         {
             IList<int> emptyList = new List<int>();
 
-            double jaccardIndex = emptyList.GetJaccardIndex<int>(_jaccard1);
-            var forceError = jaccardIndex;
-        }
+            Assert.Throws<InvalidOperationException>(
+                    () => emptyList.GetJaccardIndex<int>(_jaccard1).ToString());
 
-        [Test]
-        [ExpectedException(typeof(InvalidOperationException))]
-        public void WillThrowInvalidOperationExceptionIfCompareToIsEmptyOnGetIndex()
-        {
-            IList<int> emptyList = new List<int>();
-
-            double jaccardIndex = _jaccard1.GetJaccardIndex<int>(emptyList);
-            var forceError = jaccardIndex;
+            Assert.Throws<InvalidOperationException>(
+                    () => _jaccard1.GetJaccardIndex<int>(emptyList).ToString());
         }
 
         [Test]
@@ -213,11 +232,25 @@ namespace ExtensionMethodTests
             Assert.AreEqual(_jaccard3, sortedLists.ElementAt(0));
             Assert.AreEqual(_jaccard1, sortedLists.ElementAt(1));
             Assert.AreEqual(_jaccard2, sortedLists.ElementAt(2));
+
+            //binary variant implementation
+            IList<Person> persons = GetPersonList();
+
+            var sortedList = persons.JaccardIndexSort<Person>(
+                                                        new List<Func<Person, bool>>() {
+                                                            (x) => x.FirstName == "John", 
+                                                            (x) => x.Lastname.StartsWith("D"),
+                                                            (x) => x.Age < 30,
+                                                            (x) => x.Gender == 'M' });
+
+            Assert.AreEqual(sortedList.ElementAt(0).FirstName, "John");
+            Assert.AreEqual(sortedList.ElementAt(1).FirstName, "Brian");
+            Assert.AreEqual(sortedList.ElementAt(2).FirstName, "Bob");
+            Assert.AreEqual(sortedList.Last().FirstName, "Laura");
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
-        public void WillThrowArgumentNullExceptionIfSourceIsNull()
+        public void WillThrowArgumentNullExceptionIfParamsNullOnSort()
         {
             IList<int> nullList = null;
 
@@ -226,23 +259,17 @@ namespace ExtensionMethodTests
             lists.Add(_jaccard2);
             lists.Add(_jaccard3);
 
-            var sortedLists = nullList.JaccardIndexSort<int>(lists);
-            var forceError = sortedLists.Count();
+            Assert.Throws<ArgumentNullException>(
+                    () => nullList.JaccardIndexSort<int>(lists).Count());
+
+            IList<IList<int>> nullListOfLists = null;
+
+            Assert.Throws<ArgumentNullException>(
+                    () => _jaccard1.JaccardIndexSort<int>(nullListOfLists).Count());
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
-        public void WillThrowArgumentNullExceptionIfCompareToIsNull()
-        {
-            IList<IList<int>> nullLists = null;
-
-            var sortedLists = _jaccard1.JaccardIndexSort<int>(nullLists);
-            var forceError = sortedLists.Count();
-        }
-
-        [Test]
-        [ExpectedException(typeof(InvalidOperationException))]
-        public void WillThrowInvalidOperationExceptionIfListIsEmpty()
+        public void WillThrowInvalidOperationExceptionIfParamsEmptyOnSort()
         {
             IList<int> emptyList = new List<int>();
 
@@ -251,21 +278,69 @@ namespace ExtensionMethodTests
             lists.Add(_jaccard2);
             lists.Add(_jaccard3);
 
-            var sortedLists = emptyList.JaccardIndexSort<int>(lists);
-            var forceError = sortedLists.Count();
+            Assert.Throws<InvalidOperationException>(
+                    () => emptyList.JaccardIndexSort<int>(lists).Count());
 
+            IList<IList<int>> emptyListOfLists = new List<IList<int>>();
+
+            Assert.Throws<InvalidOperationException>(
+                    () => _jaccard1.JaccardIndexSort<int>(emptyListOfLists).Count());
         }
 
         [Test]
-        [ExpectedException(typeof(InvalidOperationException))]
-        public void WillThrowInvalidOperationExceptionIfCompareToIsEmpty()
+        public void WillThrowArgumentNullExceptionIfParamsNullOnSortBinary()
         {
-            IList<IList<int>> emptyCompareTo = new List<IList<int>>();
+            IList<Person> persons = GetPersonList();
+            IList<Func<Person, bool>> nullList = null;
 
-            var sortedLists = _jaccard1.JaccardIndexSort<int>(emptyCompareTo);
-            var forceError = sortedLists.Count();
+            Assert.Throws<ArgumentNullException>(
+                () => persons.JaccardIndexSort<Person>(nullList).Count());
+
+            persons = null;
+            Assert.Throws<ArgumentNullException>(
+                () => persons.JaccardIndexSort<Person>(new List<Func<Person, bool>>() {
+                                                            (x) => x.FirstName == "John", 
+                                                            (x) => x.Lastname == "Murphy",
+                                                            (x) => x.Age < 30,
+                                                            (x) => x.Gender == 'M' }).Count());
+        }
+
+        [Test]
+        public void WillThrowInvalidOperationExceptionIfComparatorsEmptyOnSortBinary()
+        {
+            IList<Person> persons = GetPersonList();
+
+            Assert.Throws<InvalidOperationException>(
+                () => persons.JaccardIndexSort<Person>(new List<Func<Person, bool>>() { }).Count());
         }
 
         #endregion
+
+        private List<Person> GetPersonList()
+        {
+            List<Person> persons = new List<Person>();
+
+            persons.Add(new Person() { FirstName = "Laura", Lastname = "Appletree", Age = 43, Gender = 'F' });
+            persons.Add(new Person() { FirstName = "Bob", Lastname = "Stevens", Age = 40, Gender = 'M' });
+            persons.Add(new Person() { FirstName = "Jane", Lastname = "Doe", Age = 30, Gender = 'F' });
+            persons.Add(new Person() { FirstName = "Sally", Lastname = "Murphy", Age = 27, Gender = 'F' });
+            persons.Add(new Person() { FirstName = "Brian", Lastname = "Dorsey", Age = 32, Gender = 'M' });
+            persons.Add(new Person() { FirstName = "William", Lastname = "Fredericks", Age = 50, Gender = 'M' });
+            persons.Add(new Person() { FirstName = "John", Lastname = "Doe", Age = 24, Gender = 'M' });
+
+            return persons;
+        }
     }
+
+    #region nested class
+
+    class Person
+    {
+        internal string FirstName { get; set; }
+        internal string Lastname { get; set; }
+        internal char Gender { get; set; }
+        internal int Age { get; set; }
+    }
+
+    #endregion
 }
