@@ -34,15 +34,15 @@ namespace CollectionExtensions
         #region Slice
 
         /// <summary>
-        /// Get the array slice between the two indexes; If overflow or inderflow occurs, 
+        /// Get the array slice between the two indexes; If overflow or underflow occurs, 
         /// will return an empty array of type T. Slice is inclusive for start, exclusive
         /// for end
         /// </summary>
         /// <param name="arr">Array to be sliced</param>
         /// <param name="start">Index at which the slice starts; cannot be negative.</param>
         /// <param name="end">Endpoint for the slice of the array. Supports negative values</param>
-        /// <returns>Array slice adhereing to the start and ending points, or a strongly
-        /// typed emtpy array if an underflow or overflow situation is encountered</returns>
+        /// <returns>Array slice adhering to the start and ending points, or a strongly
+        /// typed empty array if an underflow or overflow situation is encountered</returns>
         public static T[] Slice<T>(this T[] arr, int start, int end)
         {
             int segmentEnd = end;
@@ -80,15 +80,15 @@ namespace CollectionExtensions
         }
 
         /// <summary>
-        /// Get the list slice between the two indexes; If overflow or inderflow occurs, 
+        /// Get the list slice between the two indexes; If overflow or underflow occurs, 
         /// will return an empty list of type T. Slice is inclusive for start, exclusive
         /// for end
         /// </summary>
         /// <param name="list">The list to be sliced</param>
         /// <param name="start">Index at which the slice starts; cannot be negative.</param>
         /// <param name="end">Endpoint for the slice of the list. Supports negative values</param>
-        /// <returns>List slice adhereing to the start and ending points, or a strongly
-        /// typed emtpy array if an underflow or overflow situation is encountered</returns>
+        /// <returns>List slice adhering to the start and ending points, or a strongly
+        /// typed empty array if an underflow or overflow situation is encountered</returns>
         public static IList<T> Slice<T>(this IList<T> list, int start, int end)
         {
             int segmentEnd = end;

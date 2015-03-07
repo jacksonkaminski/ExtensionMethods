@@ -247,10 +247,10 @@ namespace EnumerationExtensions
         /// <summary>
         /// Compares an object of type T against the set of comparators and returns
         /// the Jaccard similarity coefficient of the object relative to the rules
-        /// as specififed in the comparators set
+        /// as specified in the comparators set
         /// </summary>
         /// <param name="source">The object to be tested for similarity</param>
-        /// <param name="comparators">A series of predicate methods used to perfom the object comparison</param>
+        /// <param name="comparators">A series of predicate methods used to perform the object comparison</param>
         /// <returns>A value between 1.0 and 0.0 denoting the similarity coefficient</returns>
         /// <exception cref="ArgumentNullException">Thrown if either source and comparators list are null</exception>
         /// <exception cref="InvalidOperationException">Thrown if the comparators list is empty</exception>
@@ -279,7 +279,7 @@ namespace EnumerationExtensions
         /// </summary>
         /// <param name="source">The list objects to be tested for similarity</param>
         /// <param name="comparators">A series of predicate methods used to perfom the object comparison</param>
-        /// <returns>The list of objects, sorted by their Jaccard Simimlarity Index, sorted more
+        /// <returns>The list of objects, sorted by their Jaccard Similarity Index, sorted more
         /// similar to less similar</returns>
         /// <exception cref="ArgumentNullException">Thrown if either source and comparators list are null</exception>
         /// <exception cref="InvalidOperationException">Thrown if the comparators list is empty</exception>
@@ -325,7 +325,7 @@ namespace EnumerationExtensions
         }
 
         //Performs the actual calculation to derive the Jaccard Index
-        //Note that the comparison object to whome the source's 'similarity' is
+        //Note that the comparison object to whom the source's 'similarity' is
         //being calculated is a fictional object who, when subjected to testing
         //using the comparators list of predicates returns all true values
         private static double CalculateJaccardIndex<T>(T source, IList<Func<T, bool>> comparators)
