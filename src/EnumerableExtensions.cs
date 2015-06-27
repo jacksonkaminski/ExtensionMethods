@@ -338,7 +338,7 @@ namespace EnumerationExtensions
             // [both true / (both true + first side true + second side true)]
             //where one side is always true, we can restate the calculation as
             // [both true / count of comparators] 
-            //as all binary compare pairs resulting will be either 'both true' or 'first side true'
+            //as all binary compare pairs resulting will be either 'both true' or 'one side true'
             //and the sum of those will be the count of comparators
             foreach (var returnValue in comparators.Select(f => f(source)))
             {
