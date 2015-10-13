@@ -193,6 +193,8 @@ namespace EnumerationExtensions
         /// following pages:
         /// http://people.revoledu.com/kardi/tutorial/Similarity/Jaccard.html
         /// http://en.wikipedia.org/wiki/Jaccard_index
+        /// NOTE: This assumes the collection being worked on is NOT subject to modification once 
+        /// a call to this call is made!
         /// </remarks>
         public static IEnumerable<IEnumerable<T>> JaccardIndexSort<T>(this IEnumerable<T> source, IEnumerable<IEnumerable<T>> compareTo)
         {
@@ -291,6 +293,8 @@ namespace EnumerationExtensions
         /// following pages:
         /// http://people.revoledu.com/kardi/tutorial/Similarity/Jaccard.html
         /// http://en.wikipedia.org/wiki/Jaccard_index
+        /// NOTE: This assumes the collection being worked on is NOT subject to modification once 
+        /// a call to this call is made!
         /// </remarks> 
         public static IEnumerable<T> JaccardIndexSort<T>(this IEnumerable<T> source, IList<Func<T, bool>> comparators)
         {
