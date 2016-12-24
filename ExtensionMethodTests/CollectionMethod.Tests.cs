@@ -161,6 +161,40 @@ namespace ExtensionMethodTests
 
         #endregion
 
+        #region tests for init / tail
+
+        [Test]
+        public void CanGetInit()
+        {
+            IList<int> init = _list.Init<int>();
+            Assert.IsTrue(init.Count == _list.Count - 1);
+            Assert.IsFalse(init.Contains(9));
+        }
+
+        [Test]
+        public void CanThrowInvalidOperationIfInitCalledOnEmptyList()
+        {
+            IList<int> emptyList = new List<int>();
+            Assert.Throws<InvalidOperationException>(() => emptyList.Init<int>());
+        }
+
+        [Test]
+        public void CanGetTail()
+        {
+            IList<int> tail = _list.Tail<int>();
+            Assert.IsTrue(tail.Count == _list.Count - 1);
+            Assert.IsFalse(tail.Contains(0));
+        }
+
+        [Test]
+        public void CanThrowInvalidOperationIfTailCalledOnEmptyList()
+        {
+            IList<int> emptyList = new List<int>();
+            Assert.Throws<InvalidOperationException>(() => emptyList.Init<int>());
+        }
+
+        #endregion
+
         #region nested class
 
         class Person

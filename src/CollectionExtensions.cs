@@ -241,5 +241,70 @@ namespace CollectionExtensions
 
         #endregion
 
+        #region Init
+        
+        /// <summary>
+        /// Takes a strongly typed list and returns a strongly typed list 
+        /// containing all but the last element in the original list; The
+        /// ordering of the contents of the list match that of the original list
+        /// </summary>
+        /// <param name="list">The list Init is called on</param>
+        /// <returns>A strongly typed list containing all but the last element in the original list</returns>
+        public static IList<T> Init<T>(this IList<T> list)
+        {
+            if (list.Count == 0)
+            {
+                throw new InvalidOperationException("Init attempt failed due to empty collection");
+            }
+            else if (list.Count == 1)
+            {
+                return new List<T>();
+            }
+            else
+            {
+                IList<T> newList = new List<T>();
+                for (int i = 0; i < list.Count - 1; i++)
+                {
+                    newList.Add(list[i]);
+                }
+
+                return newList;
+            }
+        }
+
+        #endregion
+
+        #region Tail
+
+        /// <summary>
+        /// Takes a strongly typed list and returns a strongly typed list 
+        /// containing all but the first element in the original list; The
+        /// ordering of the contents of the list match that of the original list
+        /// </summary>
+        /// <param name="list">The list Tail is called on</param>
+        /// <returns>A strongly typed list containing all but the first element in the original list</returns>
+        public static IList<T> Tail<T>(this IList<T> list)
+        {
+            if (list.Count == 0)
+            {
+                throw new InvalidOperationException("Tail attempt failed due to empty collection");
+            }
+            else if (list.Count == 1)
+            {
+                return new List<T>();
+            }
+            else
+            {
+                IList<T> newList = new List<T>();
+                for (int i = 1; i < list.Count; i++)
+                {
+                    newList.Add(list[i]);
+                }
+
+                return newList;
+            }
+        }
+
+        #endregion
     }
 }
