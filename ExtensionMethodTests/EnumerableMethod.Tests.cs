@@ -42,12 +42,11 @@ namespace ExtensionMethodTests
         }
 
         [Test]
-        [ExpectedException(typeof(InvalidOperationException))]
         public void CanThrowExceptionOEmptyCollectionEnumerable()
         {
             IEnumerable<Person> noPersons = new List<Person>();
-            IEnumerable<Person>[] partitionedResults =
-                        noPersons.Partition<Person>(x => x.Gender == 'M', true);
+            Assert.Throws<InvalidOperationException>(
+                () => noPersons.Partition<Person>(x => x.Gender == 'M', true));
         }
 
         [Test]
@@ -76,20 +75,20 @@ namespace ExtensionMethodTests
         }
 
         [Test]
-        [ExpectedException(typeof(InvalidOperationException))]
         public void CanThrowExceptionOnInvalidChunkSize()
         {
             IEnumerable<IList<Person>> chunked = _persons.Chunk(0);
-            var test = chunked.Count(); //deferred execution means requires action to raise exception 
+            Assert.Throws<InvalidOperationException>(
+                () => chunked.Count());
         }
 
         [Test]
-        [ExpectedException(typeof(InvalidOperationException))]
         public void CanThrowExceptionIfCollectionIsEmpty()
         {
             IList<Person> emptyList = new List<Person>();
             IEnumerable<IList<Person>> chunked = emptyList.Chunk(1, true);
-            var test = chunked.Count(); //deferred execution means requires action to raise exception 
+            Assert.Throws<InvalidOperationException>(
+                () => chunked.Count());
         }
 
         [Test]

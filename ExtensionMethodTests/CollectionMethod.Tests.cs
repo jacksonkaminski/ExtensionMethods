@@ -100,12 +100,11 @@ namespace ExtensionMethodTests
         }
 
         [Test]
-        [ExpectedException(typeof(InvalidOperationException))]
         public void CanThrowExceptionOEmptyList()
         {
             IList<Person> noPersons = new List<Person>();
-            IList<Person>[] partitionedResults =
-                        noPersons.Partition<Person>(x => x.Gender == 'M', true);
+            Assert.Throws<InvalidOperationException>(
+                () => noPersons.Partition<Person>(x => x.Gender == 'M', true));
         }
 
         [Test]
@@ -140,12 +139,11 @@ namespace ExtensionMethodTests
         }
 
         [Test]
-        [ExpectedException(typeof(InvalidOperationException))]
         public void CanThrowExceptionOEmptyArray()
         {
             Person[] noPersons = new Person[0];
-            Person[][] partitionedResults =
-                        noPersons.Partition<Person>(x => x.Gender == 'M', true);
+            Assert.Throws<InvalidOperationException>(
+               () => noPersons.Partition<Person>(x => x.Gender == 'M', true));
         }
 
         [Test]
@@ -172,10 +170,18 @@ namespace ExtensionMethodTests
         }
 
         [Test]
+        public void CanReturnEmptyListIfInitCalledOnEmptyList()
+        {
+            IList<int> emptyList = new List<int>();
+            IList<int> initResult = emptyList.Init();
+            Assert.IsTrue(initResult.Count == 0);
+        }
+
+        [Test]
         public void CanThrowInvalidOperationIfInitCalledOnEmptyList()
         {
             IList<int> emptyList = new List<int>();
-            Assert.Throws<InvalidOperationException>(() => emptyList.Init<int>());
+            Assert.Throws<InvalidOperationException>(() => emptyList.Init<int>(true));
         }
 
         [Test]
@@ -187,10 +193,18 @@ namespace ExtensionMethodTests
         }
 
         [Test]
+        public void CanReturnEmptyListIfTailCalledOnEmptyList()
+        {
+            IList<int> emptyList = new List<int>();
+            IList<int> tailResult = emptyList.Tail();
+            Assert.IsTrue(tailResult.Count == 0);
+        }
+
+        [Test]
         public void CanThrowInvalidOperationIfTailCalledOnEmptyList()
         {
             IList<int> emptyList = new List<int>();
-            Assert.Throws<InvalidOperationException>(() => emptyList.Init<int>());
+            Assert.Throws<InvalidOperationException>(() => emptyList.Tail<int>(true));
         }
 
         #endregion

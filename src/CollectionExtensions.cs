@@ -152,7 +152,7 @@ namespace CollectionExtensions
         /// that returned true when the predicate was applied; the second list contains the elements
         /// that returned false.</returns>
         /// <exception cref="InvalidOperationException">If Partition is called on an empty list when
-        /// the OnEmptyCollection.ThrowException option is selected, then this exception will be raised</exception>
+        /// the throwErrorIfCollectionEmpty parameter is set to true, then this exception will be raised</exception>
         public static IList<T>[] Partition<T>(this IList<T> list, Func<T, bool> partitionTest, bool throwErrorIfCollectionEmpty)
         {
             IList<T> passTest = new List<T>();
@@ -205,8 +205,8 @@ namespace CollectionExtensions
         /// <returns>An Array containing two arrays. The first array contains all elements
         /// that returned true when the predicate was applied; the second array contains the elements
         /// that returned false.</returns>
-        /// <exception cref="InvalidOperationException">If Partition is called on an empty array when
-        /// the OnEmptyCollection.ThrowException option is selected, then this exception will be raised</exception>
+        /// <exception cref="InvalidOperationException">If Partition is called on an empty list when
+        /// the throwErrorIfCollectionEmpty parameter is set to true, then this exception will be raised</exception>
         public static T[][] Partition<T>(this T[] array, Func<T, bool> partitionTest, bool throwErrorIfCollectionEmpty)
         {
             IList<T> passTest = new List<T>();
@@ -242,7 +242,7 @@ namespace CollectionExtensions
         #endregion
 
         #region Init
-        
+
         /// <summary>
         /// Takes a strongly typed list and returns a strongly typed list 
         /// containing all but the last element in the original list; The
@@ -250,11 +250,18 @@ namespace CollectionExtensions
         /// </summary>
         /// <param name="list">The list Init is called on</param>
         /// <returns>A strongly typed list containing all but the last element in the original list</returns>
-        public static IList<T> Init<T>(this IList<T> list)
+        /// <exception cref="InvalidOperationException">If Init is called on an empty list when
+        /// the throwErrorIfCollectionEmpty parameter is set to true, then this exception will be raised</exception>
+        public static IList<T> Init<T>(this IList<T> list, bool throwErrorIfCollectionEmpty)
         {
             if (list.Count == 0)
             {
-                throw new InvalidOperationException("Init attempt failed due to empty collection");
+                if (throwErrorIfCollectionEmpty)
+                {
+                    throw new InvalidOperationException("Init attempt failed due to empty collection"); 
+                }
+
+                return list;
             }
             else if (list.Count == 1)
             {
@@ -272,6 +279,18 @@ namespace CollectionExtensions
             }
         }
 
+        /// <summary>
+        /// Takes a strongly typed list and returns a strongly typed list 
+        /// containing all but the last element in the original list; The
+        /// ordering of the contents of the list match that of the original list
+        /// </summary>
+        /// <param name="list">The list Init is called on</param>
+        /// <returns>A strongly typed list containing all but the last element in the original list</returns>
+        public static IList<T> Init<T>(this IList<T> list)
+        {
+            return list.Init<T>(false);
+        }
+
         #endregion
 
         #region Tail
@@ -283,11 +302,18 @@ namespace CollectionExtensions
         /// </summary>
         /// <param name="list">The list Tail is called on</param>
         /// <returns>A strongly typed list containing all but the first element in the original list</returns>
-        public static IList<T> Tail<T>(this IList<T> list)
+        /// <exception cref="InvalidOperationException">If Tail is called on an empty list when
+        /// the throwErrorIfCollectionEmpty parameter is set to true, then this exception will be raised</exception>
+        public static IList<T>Tail<T>(this IList<T> list, bool throwErrorIfCollectionEmpty)
         {
             if (list.Count == 0)
             {
-                throw new InvalidOperationException("Tail attempt failed due to empty collection");
+                if (throwErrorIfCollectionEmpty)
+                {
+                    throw new InvalidOperationException("Tail attempt failed due to empty collection"); 
+                }
+
+                return list;
             }
             else if (list.Count == 1)
             {
@@ -303,6 +329,18 @@ namespace CollectionExtensions
 
                 return newList;
             }
+        }
+
+        /// <summary>
+        /// Takes a strongly typed list and returns a strongly typed list 
+        /// containing all but the first element in the original list; The
+        /// ordering of the contents of the list match that of the original list
+        /// </summary>
+        /// <param name="list">The list Tail is called on</param>
+        /// <returns>A strongly typed list containing all but the first element in the original list</returns>
+        public static IList<T> Tail<T>(this IList<T> list)
+        {
+            return list.Tail<T>(false);
         }
 
         #endregion
