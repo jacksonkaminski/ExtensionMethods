@@ -182,7 +182,7 @@ namespace ExtensionMethodTests
         {
             IList<int> emptyList = new List<int>();
             IList<int> initResult = emptyList.Init();
-            Assert.IsTrue(initResult.Count == 0);
+            Assert.IsEmpty(initResult);
         }
 
         [Test]
@@ -190,7 +190,7 @@ namespace ExtensionMethodTests
         {
             int[] emptyArray = new int[0];
             int[] initResult = emptyArray.Init();
-            Assert.IsTrue(initResult.Length == 0);
+            Assert.IsEmpty(initResult);
         }
 
         [Test]

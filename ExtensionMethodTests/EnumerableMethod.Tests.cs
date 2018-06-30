@@ -101,6 +101,48 @@ namespace ExtensionMethodTests
 
         #endregion
 
+        #region Tests for Init
+
+        [Test]
+        public void CanInit()
+        {
+            IEnumerable<int> nums = _array.Init<int>();
+            Assert.IsTrue(nums.Count() == _array.Length - 1);
+            // is last element in new collection the second from last in the original?
+            Assert.IsFalse(nums.ElementAt(nums.Count() - 1) == _array[_array.Length - 1]);
+        }
+
+        [Test]
+        public void CanReturnEmptyCollectionIfInitCalledOnEmptyCollection()
+        {
+            IList<Person> emptyList = new List<Person>();
+            IEnumerable<Person> init = emptyList.Init<Person>();
+            Assert.IsEmpty(init);
+        }
+
+        #endregion
+
+
+        #region Tests for Tail
+
+        [Test]
+        public void CanTail()
+        {
+            IEnumerable<int> nums = _array.Tail<int>();
+            Assert.IsTrue(nums.Count() == _array.Length - 1);
+            Assert.IsTrue(nums.ElementAt(0) == _array[1]);
+        }
+
+        [Test]
+        public void CanReturnEmptyCollectionIfTailCalledOnEmptyCollection()
+        {
+            IList<Person> emptyList = new List<Person>();
+            IEnumerable<Person> tail = emptyList.Tail<Person>();
+            Assert.IsEmpty(tail);
+        }
+        
+        #endregion
+
         #region private methods
 
         private List<Person> GetPersonList()

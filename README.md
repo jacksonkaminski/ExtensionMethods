@@ -102,6 +102,7 @@ var newList = list.Init<int>();
 Implementations included targeting:
 * Array
 * IList
+* IEnumerable
 
 ### Tail ###
 Given a collection, Tail will return another collection of the same type consisting of all the elements contained
@@ -126,6 +127,7 @@ var newList = list.Tail<int>();
 Implementations included targeting:
 * Array
 * IList
+* IEnumerable
 
 ### GetJaccardIndex ###
 Get the Jaccard Similarity Coefficient (Jaccard Index) of an enumeration as it relates to another enumeration

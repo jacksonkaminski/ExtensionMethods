@@ -356,5 +356,46 @@ namespace EnumerationExtensions
         }
 
         #endregion
+
+        #region Init
+
+        /// <summary>
+        /// Takes a strongly typed collection and returns a strongly typed collection
+        /// containing all but the last element in the original collection; The 
+        /// ordering of the contents of the collection match that of the original
+        /// collection.
+        /// </summary>
+        /// <param name="source">The collection Init will be invoked on</param>
+        /// <returns>A strongly typed collection containing all but the last element in the original collection</returns>
+        public static IEnumerable<T> Init<T>(this IEnumerable<T> source)
+        {
+            for (int i = 0; i < source.Count() - 1; i++)
+            {
+                yield return source.ElementAt<T>(i);
+            }
+        }
+
+        #endregion
+
+        #region Tail
+
+        /// <summary>
+        /// Takes a strongly typed collection and returns a strongly typed collection
+        /// containing all but the first element in the original collection; The 
+        /// ordering of the contents of the array match that of the original
+        /// collection.
+        /// </summary>
+        /// <param name="source">The collection Tail will be invoked on</param>
+        /// <returns>A strongly typed collection containing all but the first element from the original collection</returns>
+        public static IEnumerable<T> Tail<T>(this IEnumerable<T> source)
+        {
+            //@RESEARCH - DOES source.Count() FORCE COLLECTION LIKE ToList() DOES??????????????????????????????????????????????????????????
+            for (int i = 1; i <= source.Count() - 1; i++)
+            {
+                yield return source.ElementAt<T>(i);
+            }
+        }
+
+        #endregion
     }
 }
