@@ -13,7 +13,7 @@ Implementations included targeting:
 
 A Quick Example:
 
-```
+```C#
 private void PartitionOnValue()
 {
 	int[] numbers = new int[] {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
@@ -29,7 +29,7 @@ private void PartitionOnValue()
 
 Note that you can also use split on more complex objects, for example to separate persons by gender:
 
-```
+```C#
 private void PartitionOnGender(Ilist<Person> persons)
 {
 	...
@@ -49,7 +49,7 @@ Implementations included targeting:
 
 Example:
 
-```
+```C#
 private void SliceNumbers()
 {
 	int[] numbers = new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
@@ -68,7 +68,7 @@ Implementations included targeting:
 
 Example:
 
-```
+```C#
 private void ChunkArray()
 {
 	int[] numbers = new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
@@ -85,7 +85,8 @@ Given a collection, Init will return another collection of the same type consist
 the original collection except the very last element. The order of elements is preserved in the resulting collection
 
 Example:
-```
+
+```C#
 IList<int> list = new List<int>();
 
 list.Add(1);
@@ -107,7 +108,8 @@ Given a collection, Tail will return another collection of the same type consist
 the original collection, except the very first element. The order of elements is preserver in the resulting collection
 
 Example:
-```
+
+```C#
 IList<int> list = new List<int>();
 
 list.Add(1);
@@ -133,7 +135,7 @@ Implementations included targeting:
 
 Example:
 
-```
+```C#
 private static void GetJaccardIndexValues()
 {
 	IList<Product> products = GetProducts();
