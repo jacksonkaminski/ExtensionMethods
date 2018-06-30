@@ -234,7 +234,7 @@ namespace CollectionExtensions
                 }
             }
 
-            T[][] results = new T[2][] { passTest.ToArray(), failTest.ToArray() }; 
+            T[][] results = new T[2][] { passTest.ToArray(), failTest.ToArray() };
 
             return results;
         }
@@ -242,6 +242,54 @@ namespace CollectionExtensions
         #endregion
 
         #region Init
+        
+        /// <summary>
+        /// Takes a strongly typed array and returns a strongly typed array
+        /// containing all but the last element in the original array; The 
+        /// ordering of the contents of the array match that of the original
+        /// array.
+        /// </summary>
+        /// <param name="arr">The array Init is called on</param>
+        /// <returns>A strongly typed array containing all but the last element in the original array</returns>
+        public static T[] Init<T>(this T[] arr)
+        {
+            return arr.Init<T>(false);
+        }
+
+        /// <summary>
+        /// Takes a strongly typed array and returns a strongly typed array
+        /// containing all but the last element in the original array; The 
+        /// ordering of the contents of the array match that of the original
+        /// array.
+        /// </summary>
+        /// <param name="arr">The array Init is called on</param>
+        /// <param name="throwErrorIfCollectionEmpty">Determines if an exception should be raised if
+        /// the array the method is invoked on is empty</param>
+        /// <returns>A strongly typed array containing all but the last element in the original array</returns>
+        /// <exception cref="InvalidOperationException">If Init is called on an empty array when
+        /// the throwErrorIfCollectionEmpty parameter is set to true, then this exception will be raised</exception>
+        public static T[] Init<T>(this T[] arr, bool throwErrorIfCollectionEmpty)
+        {
+            if (arr.Length == 0)
+            {
+                if (throwErrorIfCollectionEmpty)
+                {
+                    throw new InvalidOperationException("Init attempt failed due to empty collection");
+                }
+
+                return arr;
+            }
+            else
+            {
+                T[] newArr = new T[arr.Length - 1];
+                for (int i = 0; i < arr.Length - 1; i++)
+                {
+                    newArr[i] = arr[i];
+                }
+
+                return newArr;
+            }
+        }
 
         /// <summary>
         /// Takes a strongly typed list and returns a strongly typed list 
@@ -249,6 +297,20 @@ namespace CollectionExtensions
         /// ordering of the contents of the list match that of the original list
         /// </summary>
         /// <param name="list">The list Init is called on</param>
+        /// <returns>A strongly typed list containing all but the last element in the original list</returns>
+        public static IList<T> Init<T>(this IList<T> list)
+        {
+            return list.Init<T>(false);
+        }
+
+        /// <summary>
+        /// Takes a strongly typed list and returns a strongly typed list 
+        /// containing all but the last element in the original list; The
+        /// ordering of the contents of the list match that of the original list
+        /// </summary>
+        /// <param name="list">The list Init is called on</param>
+        /// <param name="throwErrorIfCollectionEmpty">Determines if an exception should be raised if
+        /// the list the method is invoked on is empty</param>
         /// <returns>A strongly typed list containing all but the last element in the original list</returns>
         /// <exception cref="InvalidOperationException">If Init is called on an empty list when
         /// the throwErrorIfCollectionEmpty parameter is set to true, then this exception will be raised</exception>
@@ -258,7 +320,7 @@ namespace CollectionExtensions
             {
                 if (throwErrorIfCollectionEmpty)
                 {
-                    throw new InvalidOperationException("Init attempt failed due to empty collection"); 
+                    throw new InvalidOperationException("Init attempt failed due to empty collection");
                 }
 
                 return list;
@@ -279,21 +341,57 @@ namespace CollectionExtensions
             }
         }
 
-        /// <summary>
-        /// Takes a strongly typed list and returns a strongly typed list 
-        /// containing all but the last element in the original list; The
-        /// ordering of the contents of the list match that of the original list
-        /// </summary>
-        /// <param name="list">The list Init is called on</param>
-        /// <returns>A strongly typed list containing all but the last element in the original list</returns>
-        public static IList<T> Init<T>(this IList<T> list)
-        {
-            return list.Init<T>(false);
-        }
-
         #endregion
 
         #region Tail
+
+        /// <summary>
+        /// Takes a strongly typed array and returns a strongly typed array
+        /// containing all but the first element in the original array; The 
+        /// ordering of the contents of the array match that of the original
+        /// array.
+        /// </summary>
+        /// <param name="arr">The array Tail is called on</param>
+        /// <returns>A strongly typed array containing all but the first element from the original array</returns>
+        public static T[] Tail<T>(this T[] arr)
+        {
+            return arr.Tail<T>(false);
+        }
+
+        /// <summary>
+        /// Takes a strongly typed array and returns a strongly typed array
+        /// containing all but the first element in the original array; The 
+        /// ordering of the contents of the array match that of the original
+        /// array.
+        /// </summary>
+        /// <param name="arr">The array Tail is called on</param>
+        /// <param name="throwErrorIfCollectionEmpty">Determines if an exception should be raised if
+        /// the array the method is invoked on is empty</param>
+        /// <returns>A strongly typed array containing all but the first element from the original array</returns>
+        /// <exception cref="InvalidOperationException">If Tail is called on an empty array when
+        /// the throwErrorIfCollectionEmpty parameter is set to true, then this exception will be raised</exception>
+        public static T[] Tail<T>(this T[] arr, bool throwErrorIfCollectionEmpty)
+        {
+            if (arr.Length == 0)
+            {
+                if (throwErrorIfCollectionEmpty)
+                {
+                    throw new InvalidOperationException("Tail attempt failed due to empty collection");
+                }
+
+                return arr;
+            }
+            else
+            {
+                T[] newArr = new T[arr.Length - 1];
+                for (int i = 1; i <= arr.Length - 1; i++)
+                {
+                    newArr[i-1] = arr[i];
+                }
+
+                return newArr;
+            }
+        }
 
         /// <summary>
         /// Takes a strongly typed list and returns a strongly typed list 
@@ -302,15 +400,29 @@ namespace CollectionExtensions
         /// </summary>
         /// <param name="list">The list Tail is called on</param>
         /// <returns>A strongly typed list containing all but the first element in the original list</returns>
+        public static IList<T> Tail<T>(this IList<T> list)
+        {
+            return list.Tail<T>(false);
+        }
+
+        /// <summary>
+        /// Takes a strongly typed list and returns a strongly typed list 
+        /// containing all but the first element in the original list; The
+        /// ordering of the contents of the list match that of the original list
+        /// </summary>
+        /// <param name="list">The list Tail is called on</param>
+        /// <param name="throwErrorIfCollectionEmpty">Determines if an exception should be raised if
+        /// the list the method is invoked on is empty</param>
+        /// <returns>A strongly typed list containing all but the first element in the original list</returns>
         /// <exception cref="InvalidOperationException">If Tail is called on an empty list when
         /// the throwErrorIfCollectionEmpty parameter is set to true, then this exception will be raised</exception>
-        public static IList<T>Tail<T>(this IList<T> list, bool throwErrorIfCollectionEmpty)
+        public static IList<T> Tail<T>(this IList<T> list, bool throwErrorIfCollectionEmpty)
         {
             if (list.Count == 0)
             {
                 if (throwErrorIfCollectionEmpty)
                 {
-                    throw new InvalidOperationException("Tail attempt failed due to empty collection"); 
+                    throw new InvalidOperationException("Tail attempt failed due to empty collection");
                 }
 
                 return list;
@@ -329,18 +441,6 @@ namespace CollectionExtensions
 
                 return newList;
             }
-        }
-
-        /// <summary>
-        /// Takes a strongly typed list and returns a strongly typed list 
-        /// containing all but the first element in the original list; The
-        /// ordering of the contents of the list match that of the original list
-        /// </summary>
-        /// <param name="list">The list Tail is called on</param>
-        /// <returns>A strongly typed list containing all but the first element in the original list</returns>
-        public static IList<T> Tail<T>(this IList<T> list)
-        {
-            return list.Tail<T>(false);
         }
 
         #endregion

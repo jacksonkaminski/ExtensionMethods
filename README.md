@@ -80,6 +80,44 @@ private void ChunkArray()
 // The list of numbers was chunked into 5 pieces
 ```
 
+###Init###
+Given a collection, Init will return another collection of the same type consisting of all elements contained in
+the original collection except the very last element. The order of elements is preserved in the resulting collection
+
+Example:
+```
+IList<int> list = new List<int>();
+
+list.Add(1);
+list.Add(2);
+list.Add(3);
+list.Add(4);
+
+var newList = list.Init<int>();
+
+// Returns
+// { 1, 2, 3 }
+```
+
+###Tail###
+Given a collection, Tail will return another collection of the same type consisting of all the elements contained
+the original collection, except the very first element. The order of elements is preserver in the resulting collection
+
+Example:
+```
+IList<int> list = new List<int>();
+
+list.Add(1);
+list.Add(2);
+list.Add(3);
+list.Add(4);
+
+var newList = list.Tail<int>();
+
+// Returns
+// { 2, 3, 4 }
+```
+
 ###GetJaccardIndex###
 Get the Jaccard Similarity Coefficient (Jaccard Index) of an enumeration as it relates to another enumeration
 

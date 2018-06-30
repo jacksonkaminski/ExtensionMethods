@@ -162,11 +162,19 @@ namespace ExtensionMethodTests
         #region tests for init / tail
 
         [Test]
-        public void CanGetInit()
+        public void CanGetInitForList()
         {
             IList<int> init = _list.Init<int>();
             Assert.IsTrue(init.Count == _list.Count - 1);
             Assert.IsFalse(init.Contains(9));
+        }
+
+        [Test]
+        public void CanGetInitForArray()
+        {
+            int[] init = _array.Init<int>();
+            Assert.IsTrue(init.Length == _array.Length - 1);
+            Assert.IsFalse(init[init.Length - 1] == _array[_array.Length - 1]);
         }
 
         [Test]
@@ -178,6 +186,14 @@ namespace ExtensionMethodTests
         }
 
         [Test]
+        public void CanReturnEmptyArrayIfInitCalledOnEmptyArray()
+        {
+            int[] emptyArray = new int[0];
+            int[] initResult = emptyArray.Init();
+            Assert.IsTrue(initResult.Length == 0);
+        }
+
+        [Test]
         public void CanThrowInvalidOperationIfInitCalledOnEmptyList()
         {
             IList<int> emptyList = new List<int>();
@@ -185,11 +201,27 @@ namespace ExtensionMethodTests
         }
 
         [Test]
-        public void CanGetTail()
+        public void CanThrowInvalidOperationIfInitCalledOnEmptyArray()
+        {
+            int[] emptyArray = new int[0];
+            Assert.Throws<InvalidOperationException>(() => emptyArray.Init<int>(true));
+        }
+
+        [Test]
+        public void CanGetTailForList()
         {
             IList<int> tail = _list.Tail<int>();
             Assert.IsTrue(tail.Count == _list.Count - 1);
             Assert.IsFalse(tail.Contains(0));
+        }
+
+        [Test]
+        public void CanGetTailForArray()
+        {
+            int[] tail = _array.Tail<int>();
+            Assert.IsTrue(tail.Length == _array.Length - 1);
+            Assert.IsFalse(tail[0] == 0);
+            Assert.IsTrue(tail[tail.Length - 1] == _array[_array.Length - 1]);
         }
 
         [Test]
@@ -201,10 +233,25 @@ namespace ExtensionMethodTests
         }
 
         [Test]
+        public void CanReturnEmptyArrayIfTailCalledOnEmptyArray()
+        {
+            int[] emptyArray = new int[0];
+            int[] tailResult = emptyArray.Tail();
+            Assert.IsTrue(tailResult.Length == 0);
+        }
+
+        [Test]
         public void CanThrowInvalidOperationIfTailCalledOnEmptyList()
         {
             IList<int> emptyList = new List<int>();
             Assert.Throws<InvalidOperationException>(() => emptyList.Tail<int>(true));
+        }
+
+        [Test]
+        public void CanThrowInvalidOperationIfTailCalledOnEmptyArray()
+        {
+            int[] emptyArray = new int[0];
+            Assert.Throws<InvalidOperationException>(() => emptyArray.Tail<int>(true));
         }
 
         #endregion
