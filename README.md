@@ -3,7 +3,7 @@ ExtensionMethods
 
 Some useful extension methods:
 
-###Partition###
+### Partition ###
 Applied to a collection, this method takes a predicate method which it uses to partition the contents of the collection into two separate collections. The first collection will contain all elements that returned true as per the predicate, the second, all the elements that returned false.
 
 Implementations included targeting:
@@ -38,7 +38,7 @@ private void PartitionOnGender(Ilist<Person> persons)
 }
 ```
 
-###Slice###
+### Slice ###
 Applied to a collection, this method returns a segment of the collection it was called on. You can specify the segment to be extracted not only by positve index values, but also negative index values, allowing segment range end points to be defined by their distance from the end of the collection. 
 
 Note that when defining the ranges, Slice is inclusive for the starting index, and exclusive for the ending index
@@ -60,7 +60,7 @@ private void SliceNumbers()
 }
 ```
 
-###Chunk###
+### Chunk ###
 Applied to an an enumerable collection, this method splits it into a series of lists of the specified length, and returns and enumerable containing those lists.
 
 Implementations included targeting:
@@ -80,7 +80,7 @@ private void ChunkArray()
 // The list of numbers was chunked into 5 pieces
 ```
 
-###Init###
+### Init ###
 Given a collection, Init will return another collection of the same type consisting of all elements contained in
 the original collection except the very last element. The order of elements is preserved in the resulting collection
 
@@ -98,8 +98,11 @@ var newList = list.Init<int>();
 // Returns
 // { 1, 2, 3 }
 ```
+Implementations included targeting:
+* Array
+* IList
 
-###Tail###
+### Tail ###
 Given a collection, Tail will return another collection of the same type consisting of all the elements contained
 the original collection, except the very first element. The order of elements is preserver in the resulting collection
 
@@ -118,7 +121,11 @@ var newList = list.Tail<int>();
 // { 2, 3, 4 }
 ```
 
-###GetJaccardIndex###
+Implementations included targeting:
+* Array
+* IList
+
+### GetJaccardIndex ###
 Get the Jaccard Similarity Coefficient (Jaccard Index) of an enumeration as it relates to another enumeration
 
 Implementations included targeting:
@@ -192,7 +199,7 @@ Padded Mail Envelopes:
 */
 ```
 
-###JaccardIndexSort###
+### JaccardIndexSort ###
 Applied to a collection of  enumerable collections, this method returns the contents of the collection sorted by their Jaccard Similarity Coefficient in the order of 1.0 down to 0.0 (i.e., more similarity to less similarity) as it relates to another single collection.
 
 Implementations included targeting:
