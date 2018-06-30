@@ -114,8 +114,8 @@ namespace ExtensionMethodTests
             IList<Person>[] partitionedResults =
                         noPersons.Partition<Person>(x => x.Gender == 'M', false);
 
-            Assert.IsTrue(partitionedResults[0].Count() == 0);
-            Assert.IsTrue(partitionedResults[1].Count() == 0);
+            Assert.IsEmpty(partitionedResults[0]);
+            Assert.IsEmpty(partitionedResults[1]);
         }
 
         //-- Tests for Array
@@ -153,8 +153,8 @@ namespace ExtensionMethodTests
             Person[][] partitionedResults =
                         noPersons.Partition<Person>(x => x.Gender == 'M', false);
 
-            Assert.IsTrue(partitionedResults[0].Length == 0);
-            Assert.IsTrue(partitionedResults[1].Length == 0);
+            Assert.IsEmpty(partitionedResults[0]);
+            Assert.IsEmpty(partitionedResults[1]);
         }
 
         #endregion

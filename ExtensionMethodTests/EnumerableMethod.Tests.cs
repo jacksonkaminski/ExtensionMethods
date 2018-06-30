@@ -122,7 +122,6 @@ namespace ExtensionMethodTests
 
         #endregion
 
-
         #region Tests for Tail
 
         [Test]
