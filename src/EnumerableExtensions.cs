@@ -389,10 +389,44 @@ namespace EnumerationExtensions
         /// <returns>A strongly typed collection containing all but the first element from the original collection</returns>
         public static IEnumerable<T> Tail<T>(this IEnumerable<T> source)
         {
-            //@RESEARCH - DOES source.Count() FORCE COLLECTION LIKE ToList() DOES??????????????????????????????????????????????????????????
+            //@RESEARCH - This may be as performance issue!
+            //IEnumerable to see if Count is stored at the object level or if (more likely) it will traverse the collection with every invocation
             for (int i = 1; i <= source.Count() - 1; i++)
             {
                 yield return source.ElementAt<T>(i);
+            }
+        }
+
+        #endregion
+
+        #region ToInfinite
+
+        /// <summary>
+        /// Takes a strongly typed collection and allows it to be treated as an infinite collection
+        /// </summary>
+        /// <param name="source">The collection ToInfinite will be called upon</param>
+        /// <returns>A strongly typed collection that can be iterated over as many times as is required</returns>
+        /// /// <exception cref="InvalidOperationException">If ToInfinite is called on an empty list then this 
+        /// exception will be raised</exception>
+        public static IEnumerable<T> ToInfinite<T>(this IEnumerable<T> source)
+        {
+            if (source.Count() == 0)
+            {
+                throw new InvalidOperationException("ToInfinite invoked on an empty collection");
+            }
+
+            //This locks in the initial size of the collection for the life of the collection. 
+            //If you want dynamic sizing, things get a little more difficult, as you have to manually
+            //detect the increase and 'move the needle' of the index variable accordingly
+            int elemCount = source.Count();
+            while (true)
+            {
+                for (int i = 0; i < elemCount; i++)
+                {
+                    i += (source.Count() - elemCount); 
+                    var x = source.ElementAt(i);
+                    yield return source.ElementAt(i);
+                }
             }
         }
 

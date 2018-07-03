@@ -13,11 +13,13 @@ namespace ExtensionMethodTests
     {
         int[] _array;
         List<Person> _persons;
+        int _arrayLength;
 
         [SetUp]
         public void SetUp()
         {
             _array = new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+            _arrayLength = _array.Length;
             _persons = GetPersonList();
         }
 
@@ -83,7 +85,7 @@ namespace ExtensionMethodTests
         }
 
         [Test]
-        public void CanThrowExceptionIfCollectionIsEmpty()
+        public void CanThrowExceptionIfChunkCalledOnEmptyCollection()
         {
             IList<Person> emptyList = new List<Person>();
             IEnumerable<IList<Person>> chunked = emptyList.Chunk(1, true);
@@ -107,9 +109,9 @@ namespace ExtensionMethodTests
         public void CanInit()
         {
             IEnumerable<int> nums = _array.Init<int>();
-            Assert.IsTrue(nums.Count() == _array.Length - 1);
+            Assert.IsTrue(nums.Count() == _arrayLength - 1);
             // is last element in new collection the second from last in the original?
-            Assert.IsFalse(nums.ElementAt(nums.Count() - 1) == _array[_array.Length - 1]);
+            Assert.IsFalse(nums.ElementAt(nums.Count() - 1) == _array[_arrayLength - 1]);
         }
 
         [Test]
@@ -128,7 +130,7 @@ namespace ExtensionMethodTests
         public void CanTail()
         {
             IEnumerable<int> nums = _array.Tail<int>();
-            Assert.IsTrue(nums.Count() == _array.Length - 1);
+            Assert.IsTrue(nums.Count() == _arrayLength - 1);
             Assert.IsTrue(nums.ElementAt(0) == _array[1]);
         }
 
@@ -139,7 +141,37 @@ namespace ExtensionMethodTests
             IEnumerable<Person> tail = emptyList.Tail<Person>();
             Assert.IsEmpty(tail);
         }
-        
+
+        #endregion
+
+        #region Tests for ToInfinite
+
+        [Test]
+        public void CanMakeCollectionInfinite()
+        {
+            IList<string> words = new List<string>();
+            words.Add("one");
+            words.Add("two");
+            words.Add("three");
+
+            var infiniteWords = words.ToInfinite<string>();
+
+            for (int i = 0; i < 18; i++)
+            {
+                Assert.AreEqual(infiniteWords.ElementAt(i), words.ElementAt(i % 3));
+            }
+        }
+
+        [Test]
+        public void CanThrowExceptionIfToInfiniteCalledOnEmptyCollection()
+        {
+            IList<int> emptyList = new List<int>();
+            IEnumerable<int> infiniteList = emptyList.ToInfinite<int>();
+            Assert.Throws<InvalidOperationException>(
+                () => infiniteList.Count());
+
+        }
+
         #endregion
 
         #region private methods
