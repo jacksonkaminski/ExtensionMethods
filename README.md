@@ -267,4 +267,4 @@ private static void RunAsLongAsNeeded()
 ```
 
 Implementations included targeting:
-*IEnumerable
+* IEnumerable
