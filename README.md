@@ -208,3 +208,63 @@ Applied to a collection of  enumerable collections, this method returns the cont
 
 Implementations included targeting:
 * IEnumerable
+
+
+### ToInfinite ###
+Applied to an IEnumerable, this method returns a second IEnumberable that can be iterated
+over indefinitely
+
+Example:
+
+```C#
+private static void RunAsLongAsNeeded()
+{
+	IList<char> chars = new List<char>();
+	chars.Add('H');
+	chars.Add('e');
+	chars.Add('l');
+	chars.Add('l');
+	chars.Add('o');
+	chars.Add('W');
+	chars.Add('o');
+	chars.Add('r');
+	chars.Add('l');
+	chars.Add('d');
+	chars.Add('!');
+
+	int maxValue = (new Random()).Next(15, 100);
+
+	var test = Enumerable.Range(0, maxValue)
+						 .Zip(chars.ToInfinite(), (x,y) => (string.Format("{0}: {1}",x,y)));
+
+	foreach (var item in test)
+	{
+		Console.WriteLine(item);
+	}
+}
+
+// Returns
+// 0: H
+// 1: e
+// 2: l
+// 3: l
+// 4: o
+// 5: W
+// 6: o
+// 7: r
+// 8: l
+// 9: d
+// 10: !
+// 11: H
+// 12: e
+// 13: l
+// 14: l
+// 15: o
+// 16: W
+// 17: o
+// 18: r
+// ...
+```
+
+Implementations included targeting:
+*IEnumerable
